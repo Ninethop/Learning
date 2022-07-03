@@ -162,9 +162,9 @@ public:
 			if (GetKey(olc::Key::Y).bPressed)
 			{
 				AKeyPress = false; DKeyPress = false; WKeyPress = false; SKeyPress = false;
-				vLife[0] = { 210.0f, ScreenHeight() - 73.0f };
-				vLife[1] = { 235.0f, ScreenHeight() - 73.0f };
-				vLife[2] = { 260.0f, ScreenHeight() - 73.0f };
+				vLife[0] = {120.0f, ScreenHeight() - 73.0f};
+		                vLife[1] = {145.0f, ScreenHeight() - 73.0f};
+		                vLife[2] = {170.0f, ScreenHeight() - 73.0f};
 				vFruit = { float(((rand() % ScreenWidth()) + 1)), float(((rand() % ScreenHeight()) + 1)) };
 				fSnakeSpeed = 1.0f;
 				lives = 3;
