@@ -1,16 +1,12 @@
-// O------------------------------------------------------------------------------O
-// | Example "Hello World" Program (main.cpp)                                     |
-// O------------------------------------------------------------------------------O
-
 #define OLC_PGE_APPLICATION
 #include <stdlib.h>
 #include "olcPixelGameEngine.h"
 
 // Override base class with your custom functionality 
-class Example : public olc::PixelGameEngine
+class Snake : public olc::PixelGameEngine
 {
 public:
-	Example()
+	Snake()
 	{
 		// Name your application
 		sAppName = "Snake";
@@ -24,11 +20,11 @@ private:
 	olc::vf2d vFruit = { 0.0f, 0.0f };
 
 	int nTails = 0;
-	int lives = 3;
+	short int lives = 3;
 
-	long int reward = 100;
-	long int score = 0;
-	long int highScore;
+	int reward = 100;
+	int score = 0;
+	int highScore;
 
 	float fSnakeSpeed = 1.0f;
 
@@ -44,19 +40,32 @@ public:
 		srand(time(0));
 		vBody[0] = { ScreenWidth() / 2.0f, (ScreenHeight() - 100.0f) / 2.0f };
 		vFruit = { float((rand() % ScreenWidth())), float((rand() % ScreenHeight())) };
-		vLife[0] = {120.0f, ScreenHeight() - 73.0f};
-		vLife[1] = {145.0f, ScreenHeight() - 73.0f};
-		vLife[2] = {170.0f, ScreenHeight() - 73.0f};
+		vLife[0] = { 120.0f, ScreenHeight() - 73.0f };
+		vLife[1] = { 145.0f, ScreenHeight() - 73.0f };
+		vLife[2] = { 170.0f, ScreenHeight() - 73.0f };
+
 		return true;
 	}
 
 	bool OnUserUpdate(float fElapsedTime) override
 	{
 		// Handle User Input
-		if (GetKey(olc::Key::A).bPressed) { vBody[0].x -= fSnakeSpeed * fElapsedTime; AKeyPress = true; DKeyPress = false; WKeyPress = false; SKeyPress = false; }
-		if (GetKey(olc::Key::D).bPressed) { vBody[0].x += fSnakeSpeed * fElapsedTime; AKeyPress = false; DKeyPress = true; WKeyPress = false; SKeyPress = false; }
-		if (GetKey(olc::Key::W).bPressed) { vBody[0].y -= fSnakeSpeed * fElapsedTime; AKeyPress = false; DKeyPress = false; WKeyPress = true; SKeyPress = false; }
-		if (GetKey(olc::Key::S).bPressed) { vBody[0].y += fSnakeSpeed * fElapsedTime; AKeyPress = false; DKeyPress = false; WKeyPress = false; SKeyPress = true; }
+		if (GetKey(olc::Key::A).bPressed)
+		{
+			vBody[0].x -= fSnakeSpeed * fElapsedTime; AKeyPress = true; DKeyPress = false; WKeyPress = false; SKeyPress = false;
+		}
+		if (GetKey(olc::Key::D).bPressed)
+		{
+			vBody[0].x += fSnakeSpeed * fElapsedTime; AKeyPress = false; DKeyPress = true; WKeyPress = false; SKeyPress = false;
+		}
+		if (GetKey(olc::Key::W).bPressed)
+		{
+			vBody[0].y -= fSnakeSpeed * fElapsedTime; AKeyPress = false; DKeyPress = false; WKeyPress = true; SKeyPress = false;
+		}
+		if (GetKey(olc::Key::S).bPressed)
+		{
+			vBody[0].y += fSnakeSpeed * fElapsedTime; AKeyPress = false; DKeyPress = false; WKeyPress = false; SKeyPress = true;
+		}
 
 		if (AKeyPress) vBody[0].x -= fSnakeSpeed;
 		if (DKeyPress) vBody[0].x += fSnakeSpeed;
@@ -67,16 +76,10 @@ public:
 		Clear(olc::BLACK);
 
 		// Draw Game Boundary
-		DrawLine(10, 10, ScreenWidth() - 10, 10, olc::WHITE);
-		DrawLine(10, 10, 10, ScreenHeight() - 100, olc::WHITE);
-		DrawLine(10, ScreenHeight() - 100, ScreenWidth() - 10, ScreenHeight() - 100, olc::WHITE);
-		DrawLine(ScreenWidth() - 10, 10, ScreenWidth() - 10, ScreenHeight() - 100, olc::WHITE);
+		DrawRect(10, 10, ScreenWidth() - 20, ScreenHeight() - 110, olc::WHITE);
 
 		//Draw Info Boundry
-		DrawLine(10, ScreenHeight() - 90, ScreenWidth() - 10, ScreenHeight() - 90, olc::WHITE);
-		DrawLine(10, ScreenHeight() - 90, 10, ScreenHeight() - 10, olc::WHITE);
-		DrawLine(10, ScreenHeight() - 10, ScreenWidth() - 10, ScreenHeight() - 10, olc::WHITE);
-		DrawLine(ScreenWidth() - 10, ScreenHeight() - 90, ScreenWidth() - 10, ScreenHeight() - 10, olc::WHITE);
+		DrawRect(10, ScreenHeight() - 90, ScreenWidth() - 20, 80);
 
 		// Draw Head
 		FillCircle(int(vBody[0].x), int(vBody[0].y), 6, olc::WHITE);
@@ -116,7 +119,7 @@ public:
 			vBody[i] = vPrev1;
 			vPrev1 = vPrev2;
 
-			if (i % 4 == 0 )
+			if (i % 4 == 0)
 				FillCircle(vBody[i], 5, olc::WHITE);
 		}
 
@@ -135,41 +138,41 @@ public:
 		}
 
 		// Border Collision Event
-		if (vBody[0].x > ScreenWidth() - 15.0f || vBody[0].x < 15.0f || vBody[0].y > ScreenHeight() - 105.0f || vBody[0].y < 15.0f )
+		if (vBody[0].x > ScreenWidth() - 15.0f || vBody[0].x < 15.0f || vBody[0].y > ScreenHeight() - 105.0f || vBody[0].y < 15.0f)
 		{
-			vBody[0] = { ScreenWidth() / 2.0f, ScreenHeight() / 2.0f};
+			vBody[0] = { ScreenWidth() / 2.0f, ScreenHeight() / 2.0f };
 			nTails = 0;
 			lives--;
 			score -= 500;
 			fSnakeSpeed = 1.0f;
 		}
-		
+
 		// Redraw fruit if out of bounds
 		if (vFruit.x < 20 || vFruit.x > ScreenWidth() - 20 || vFruit.y < 20 || vFruit.y > ScreenHeight() - 120)
 			vFruit = { float(((rand() % ScreenWidth()) + 1)), float(((rand() % ScreenHeight()) + 1)) };
 
 		// Check Lives
-		if (lives == 2) vLife[2] = {-10, -10};
-		if (lives == 1) vLife[1] = {-10, -10};
+		if (lives == 2) vLife[2] = { -10, -10 };
+		if (lives == 1) vLife[1] = { -10, -10 };
 		if (lives <= 0)
-		{	
+		{
 			fSnakeSpeed = 0.0f;
-			vLife[0] = {-10, -10};
+			vLife[0] = { -10, -10 };
 			vFruit = { -10, -10 };
 			score = 0;
 			DrawString((ScreenWidth() - 70) / 2, (ScreenHeight() - 100) / 2, "GAME OVER!", olc::WHITE, 1);
 			DrawString((ScreenWidth() - 120) / 2, (ScreenHeight() - 80) / 2, "TRY AGAIN? [Y/N]", olc::WHITE, 1);
-			if (GetKey(olc::Key::Y).bPressed)
+			if (GetKey(olc::Key::Y).bPressed)  // Restart Game
 			{
 				AKeyPress = false; DKeyPress = false; WKeyPress = false; SKeyPress = false;
-				vLife[0] = {120.0f, ScreenHeight() - 73.0f};
-		                vLife[1] = {145.0f, ScreenHeight() - 73.0f};
-		                vLife[2] = {170.0f, ScreenHeight() - 73.0f};
+				vLife[0] = { 120.0f, ScreenHeight() - 73.0f };
+				vLife[1] = { 145.0f, ScreenHeight() - 73.0f };
+				vLife[2] = { 170.0f, ScreenHeight() - 73.0f };
 				vFruit = { float(((rand() % ScreenWidth()) + 1)), float(((rand() % ScreenHeight()) + 1)) };
 				fSnakeSpeed = 1.0f;
 				lives = 3;
 			}
-			if (GetKey(olc::Key::N).bPressed) exit(0);
+			if (GetKey(olc::Key::N).bPressed) exit(0);  // Close Window
 		}
 
 		// Set High Score
@@ -195,7 +198,7 @@ public:
 
 int main()
 {
-	Example demo;
+	Snake demo;
 	if (demo.Construct(480, 360, 1, 1, false, true))
 		demo.Start();
 	return 0;
